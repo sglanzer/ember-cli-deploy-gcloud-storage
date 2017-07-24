@@ -10,18 +10,20 @@ module.exports = function uploadToGCS(plugin, config) {
   return Promise.all(config.filePaths.map(function (filePath) {
     var basePath = path.join(config.fileBase, filePath);
 
-    var isGzipped = config.gzippedFilePaths.indexOf(filePath) !== -1;
+    // var isGzipped = config.gzippedFilePaths.indexOf(filePath) !== -1;
 
     return new Promise(function (resolve, reject) {
       var destinationFilePath = config.bucketFolder ? path.join(config.bucketFolder, filePath) : filePath;
       if (path.sep === "\\") {
         destinationFilePath = destinationFilePath.replace(/\\/g, "/")
       }
-      var metadata = Object.assign({}, isGzipped ? {contentEncoding:"gzip"} : {}, config.metadata);
+      // var metadata = Object.assign({}, isGzipped ? {contentEncoding:"gzip"} : {}, config.metadata);
+      var metadata = Object.assign({}, config.metadata);
       return bucket.upload(basePath, {
         destination:destinationFilePath,
         metadata:metadata,
-        gzip: !isGzipped
+        // gzip: !isGzipped
+        gzip: false
       }, function (err, file) {
         if (err) {
           return reject(err);
